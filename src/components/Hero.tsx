@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDown, Sparkles } from 'lucide-react'
+import { ArrowDown, Award, Building2, Star } from 'lucide-react'
 
 type HeroProps = {
   title: string
@@ -16,12 +16,20 @@ export default function Hero({ title, subtitle }: HeroProps) {
     offset: ["start start", "end start"]
   })
   
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  // Smooth, natural scroll with spring physics - less aggressive
+  const y = useSpring(
+    useTransform(scrollYProgress, [0, 1], ['0%', '30%']),
+    { stiffness: 100, damping: 30, mass: 0.5 }
+  )
   
-  // Mouse position with spring physics for smooth movement
+  const opacity = useSpring(
+    useTransform(scrollYProgress, [0, 0.5, 0.8], [1, 0.6, 0]),
+    { stiffness: 100, damping: 30 }
+  )
+  
+  // Mouse position with spring physics
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const springConfig = { damping: 25, stiffness: 150 }
+  const springConfig = { damping: 30, stiffness: 200 }
   const mouseX = useSpring(0, springConfig)
   const mouseY = useSpring(0, springConfig)
   
@@ -29,8 +37,8 @@ export default function Hero({ title, subtitle }: HeroProps) {
     const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth - 0.5) * 2
       const y = (e.clientY / window.innerHeight - 0.5) * 2
-      mouseX.set(x * 30)
-      mouseY.set(y * 30)
+      mouseX.set(x * 40)
+      mouseY.set(y * 40)
       setMousePosition({ x, y })
     }
     
@@ -46,117 +54,161 @@ export default function Hero({ title, subtitle }: HeroProps) {
   return (
     <section
       ref={containerRef}
-      className="relative h-screen overflow-hidden bg-gradient-to-b from-white via-neutral-50 to-white"
+      className="relative h-screen overflow-hidden bg-gradient-to-br from-neutral-50 via-white to-amber-50/30"
     >
-      {/* Animated Gradient Orbs - matching project grid gold accent */}
+      {/* Luxury Gradient Orbs - sophisticated gold/champagne tones */}
       <motion.div
         style={{
           x: mouseX,
           y: mouseY,
         }}
-        className="absolute top-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-[#b38b5d]/10 via-[#d4af76]/5 to-transparent blur-3xl"
+        className="absolute top-1/3 right-1/4 w-[700px] h-[700px] rounded-full bg-gradient-to-br from-amber-100/40 via-yellow-50/20 to-transparent blur-3xl"
       />
       
       <motion.div
         style={{
-          x: useTransform(mouseX, (x) => -x * 0.5),
-          y: useTransform(mouseY, (y) => -y * 0.5),
+          x: useTransform(mouseX, (x) => -x * 0.6),
+          y: useTransform(mouseY, (y) => -y * 0.6),
         }}
-        className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-neutral-200/20 via-neutral-100/10 to-transparent blur-3xl"
+        className="absolute bottom-1/4 left-1/3 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-orange-100/30 via-amber-50/15 to-transparent blur-3xl"
       />
 
-      {/* Decorative Grid Pattern */}
+      {/* Premium geometric pattern overlay */}
       <div
-        className="absolute inset-0 opacity-[0.02]"
+        className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0, 0, 0, 0.5) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 0, 0, 0.5) 1px, transparent 1px)
+            repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(180, 139, 93, 0.4) 35px, rgba(180, 139, 93, 0.4) 36px),
+            repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(180, 139, 93, 0.4) 35px, rgba(180, 139, 93, 0.4) 36px)
           `,
-          backgroundSize: '100px 100px',
         }}
       />
 
-      {/* Floating Decorative Elements */}
+      {/* Elegant architectural frames - hidden on small screens */}
       <motion.div
-        initial={{ opacity: 0, scale: 0 }}
+        initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          x: useTransform(mouseX, (x) => x * 0.3),
-          y: useTransform(mouseY, (y) => y * 0.3),
+          x: useTransform(mouseX, (x) => x * 0.25),
+          y: useTransform(mouseY, (y) => y * 0.25),
         }}
-        className="absolute top-[20%] right-[15%] w-[300px] h-[300px] border border-neutral-200/40 rounded-full"
-      />
+        className="hidden md:block absolute top-[18%] right-[12%] w-[280px] lg:w-[400px] h-[280px] lg:h-[400px]"
+      >
+        <div className="absolute inset-0 border-2 border-[#b38b5d]/20 rounded-sm rotate-12" />
+        <div className="absolute inset-4 border border-amber-300/30 rounded-sm rotate-6" />
+      </motion.div>
       
       <motion.div
-        initial={{ opacity: 0, scale: 0 }}
+        initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
         style={{
           x: useTransform(mouseX, (x) => -x * 0.2),
           y: useTransform(mouseY, (y) => -y * 0.2),
         }}
-        className="absolute bottom-[25%] left-[10%] w-[200px] h-[200px] border border-[#b38b5d]/20 rounded-full"
-      />
+        className="hidden md:block absolute bottom-[22%] left-[8%] w-[200px] lg:w-[280px] h-[200px] lg:h-[280px]"
+      >
+        <div className="absolute inset-0 border-2 border-[#b38b5d]/15 rounded-sm -rotate-6" />
+        <div className="absolute inset-3 border border-amber-400/20 rounded-sm -rotate-3" />
+      </motion.div>
 
-      {/* Small accent dots */}
+      {/* Floating luxury accent elements */}
       <motion.div
         style={{
-          x: useTransform(mouseX, (x) => x * 0.5),
-          y: useTransform(mouseY, (y) => y * 0.5),
+          x: useTransform(mouseX, (x) => x * 0.4),
+          y: useTransform(mouseY, (y) => y * 0.4),
         }}
-        className="absolute top-[30%] left-[20%] w-2 h-2 rounded-full bg-gradient-to-br from-[#b38b5d] to-[#d4af76]"
-      />
+        className="absolute top-[28%] left-[18%]"
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          className="w-3 h-3 rounded-sm bg-gradient-to-br from-[#d4af76] to-[#b38b5d] shadow-lg"
+        />
+      </motion.div>
       
       <motion.div
         style={{
-          x: useTransform(mouseX, (x) => -x * 0.4),
-          y: useTransform(mouseY, (y) => -y * 0.4),
+          x: useTransform(mouseX, (x) => -x * 0.35),
+          y: useTransform(mouseY, (y) => -y * 0.35),
         }}
-        className="absolute bottom-[35%] right-[25%] w-3 h-3 rounded-full bg-gradient-to-br from-[#b38b5d] to-[#d4af76]"
-      />
+        className="absolute bottom-[38%] right-[22%]"
+      >
+        <motion.div
+          animate={{ rotate: -360 }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          className="w-4 h-4 rounded-sm bg-gradient-to-br from-amber-300 to-[#d4af76] shadow-xl"
+        />
+      </motion.div>
 
-      {/* Main Content */}
+      {/* Premium icon accents - hidden on small screens */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.06 }}
+        transition={{ duration: 2, delay: 1 }}
+        style={{
+          x: useTransform(mouseX, (x) => x * 0.12),
+          y: useTransform(mouseY, (y) => y * 0.12),
+        }}
+        className="hidden lg:block absolute top-[12%] left-[10%]"
+      >
+        <Building2 className="w-16 xl:w-20 h-16 xl:h-20 text-[#b38b5d]" strokeWidth={1} />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.05 }}
+        transition={{ duration: 2, delay: 1.3 }}
+        style={{
+          x: useTransform(mouseX, (x) => -x * 0.1),
+          y: useTransform(mouseY, (y) => -y * 0.1),
+        }}
+        className="hidden lg:block absolute bottom-[18%] right-[15%]"
+      >
+        <Award className="w-14 xl:w-16 h-14 xl:h-16 text-amber-400" strokeWidth={1} />
+      </motion.div>
+
+      {/* Main Content - Now with smooth natural scroll */}
       <motion.div
         style={{ y, opacity }}
         className="relative h-full flex flex-col items-center justify-center px-4 md:px-6 lg:px-8"
       >
         <div className="max-w-[1400px] w-full mx-auto text-center">
           
-          {/* Top Label with Icon */}
+           
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center justify-center gap-3 mb-8 md:mb-12"
+            className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6 md:mb-8 lg:mb-10 xl:mb-12"
           >
-            <Sparkles className="w-5 h-5 text-[#b38b5d]" />
-            <span className="text-xs md:text-sm font-bold uppercase tracking-[0.3em] text-[#b38b5d]">
-              Visual Storyteller
+            <Star className="w-3 h-3 sm:w-4 sm:h-4 text-[#b38b5d] fill-[#b38b5d]" />
+            <span className="text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-bold uppercase tracking-[0.25em] sm:tracking-[0.3em] lg:tracking-[0.35em] text-[#b38b5d]">
+              WILDLIFE AND NATURE
             </span>
-            <Sparkles className="w-5 h-5 text-[#b38b5d]" />
+            <Star className="w-3 h-3 sm:w-4 sm:h-4 text-[#b38b5d] fill-[#b38b5d]" />
           </motion.div>
 
-          {/* Decorative Line */}
+          {/* Decorative accent line */}
           <motion.div
             initial={{ width: 0 }}
-            animate={{ width: '120px' }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="h-1.5 bg-gradient-to-r from-transparent via-[#b38b5d] to-transparent rounded-full mx-auto mb-12"
+            animate={{ width: '140px' }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="h-[2px] bg-gradient-to-r from-transparent via-[#d4af76] to-transparent mx-auto mb-6 sm:mb-8 md:mb-10 xl:mb-12 shadow-sm"
           />
 
-          {/* Main Title - Matching project grid style */}
-          <div className="mb-8 md:mb-12">
+          {/* Main Title - Premium typography with better laptop scaling */}
+          <div className="mb-4 sm:mb-6 md:mb-8 lg:mb-10 xl:mb-12">
             <motion.h1
-              className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-tight leading-[0.95]"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl 3xl:text-9xl font-bold tracking-tight leading-[0.95]"
             >
               {/* First part of title */}
               <motion.span
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.9,
+                  duration: 1,
                   delay: 0.6,
                   ease: [0.16, 1, 0.3, 1],
                 }}
@@ -165,100 +217,122 @@ export default function Hero({ title, subtitle }: HeroProps) {
                 {firstPart}
               </motion.span>
               
-              {/* Last word with accent color - matching project grid */}
+              {/* Last word with luxury gradient */}
               <motion.span
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.9,
+                  duration: 1,
                   delay: 0.8,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="block text-neutral-400"
+                className="block bg-gradient-to-r from-[#d4af76] via-[#b38b5d] to-[#8b6f47] bg-clip-text text-transparent"
+                style={{
+                  textShadow: '0 0 40px rgba(179, 139, 93, 0.1)',
+                }}
               >
                 {lastWord}
               </motion.span>
             </motion.h1>
           </div>
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-base md:text-lg lg:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed mb-12 md:mb-16"
-          >
-            {subtitle}
-          </motion.p>
+          {/* Subtitle with refined spacing */}
+          
 
-          {/* Meta Info Bar - similar to project grid */}
+          {/* Premium credentials bar with better laptop spacing */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="flex flex-wrap items-center justify-center gap-6 md:gap-8 mb-12"
+            className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-6 sm:mb-8 md:mb-10 xl:mb-12"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-px bg-gradient-to-r from-transparent via-[#b38b5d] to-transparent" />
-              <span className="text-xs md:text-sm font-bold text-neutral-500 uppercase tracking-wider">
-                Based in India
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-10 sm:w-12 lg:w-16 h-[1px] bg-gradient-to-r from-transparent via-[#d4af76] to-transparent" />
+              <span className="text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-bold text-neutral-500 uppercase tracking-wider">
+                {subtitle}
               </span>
-              <div className="w-12 h-px bg-gradient-to-r from-[#b38b5d] via-transparent to-transparent" />
+              <div className="w-10 sm:w-12 lg:w-16 h-[1px] bg-gradient-to-r from-[#d4af76] via-transparent to-transparent" />
             </div>
             
-            <div className="px-4 py-2 bg-neutral-100 rounded-full">
-              <span className="text-xs font-bold text-neutral-700 uppercase tracking-wider">
-                Available for Projects
-              </span>
-            </div>
+           
           </motion.div>
 
-          {/* CTA Button - matching project grid style */}
+          {/* Luxury CTA Button with laptop-friendly sizing */}
           <motion.button
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.4 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-neutral-900 text-white rounded-2xl font-bold hover:bg-[#b38b5d] transition-all duration-500 hover:shadow-2xl hover:shadow-[#b38b5d]/20"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="group relative inline-flex items-center gap-2 sm:gap-2.5 lg:gap-3 px-6 sm:px-7 lg:px-8 xl:px-10 py-3 sm:py-3.5 lg:py-4 xl:py-5 bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 text-white rounded-xl sm:rounded-2xl font-bold overflow-hidden transition-all duration-500 shadow-xl shadow-neutral-900/20 hover:shadow-2xl hover:shadow-[#b38b5d]/30"
           >
-            <span className="text-sm uppercase tracking-wider">Explore Work</span>
+            {/* Shimmer effect */}
             <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-[#d4af76]/20 to-transparent"
+              animate={{
+                x: ['-200%', '200%'],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: 'linear',
+              }}
+            />
+            
+            <span className="relative text-[11px] sm:text-xs lg:text-sm uppercase tracking-wider">Explore Portfolio</span>
+            <motion.div
+              className="relative"
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <ArrowDown className="w-5 h-5" />
+              <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
             </motion.div>
+            
+            {/* Hover border glow */}
+            <div className="absolute inset-0 rounded-xl sm:rounded-2xl border border-[#d4af76]/0 group-hover:border-[#d4af76]/50 transition-all duration-500" />
           </motion.button>
         </div>
 
-        {/* Scroll Indicator */}
+        {/* Refined scroll indicator - laptop optimized */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 2 }}
-          className="absolute bottom-8 md:bottom-12 flex flex-col items-center gap-3"
+          className="absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-10 xl:bottom-12 flex flex-col items-center gap-2 sm:gap-2.5 lg:gap-3"
         >
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
+          <span className="text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-neutral-400">
             Scroll
           </span>
           <motion.div
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-px h-16 bg-gradient-to-b from-[#b38b5d] via-neutral-300 to-transparent"
+            className="w-[1px] h-12 sm:h-14 md:h-16 lg:h-18 xl:h-20 bg-gradient-to-b from-[#d4af76] via-[#b38b5d]/50 to-transparent"
           />
         </motion.div>
       </motion.div>
 
-      {/* Mouse Follower Cursor (optional enhancement) */}
+      {/* Luxury cursor follower - refined diamond shape */}
       <motion.div
-        className="fixed top-0 left-0 w-6 h-6 rounded-full border-2 border-[#b38b5d]/40 pointer-events-none z-50 mix-blend-difference"
+        className="hidden lg:block fixed top-0 left-0 pointer-events-none z-50"
         animate={{
-          x: mousePosition.x * window.innerWidth / 2 + window.innerWidth / 2 - 12,
-          y: mousePosition.y * window.innerHeight / 2 + window.innerHeight / 2 - 12,
+          x: mousePosition.x * (typeof window !== 'undefined' ? window.innerWidth : 0) / 2 + (typeof window !== 'undefined' ? window.innerWidth : 0) / 2 - 16,
+          y: mousePosition.y * (typeof window !== 'undefined' ? window.innerHeight : 0) / 2 + (typeof window !== 'undefined' ? window.innerHeight : 0) / 2 - 16,
         }}
         transition={{ type: 'spring', damping: 30, stiffness: 200 }}
-      />
+      >
+        <motion.div
+          className="w-8 h-8 border-2 border-[#d4af76]/50 rotate-45 backdrop-blur-sm"
+          animate={{
+            rotate: [45, 405],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            rotate: { duration: 4, repeat: Infinity, ease: 'linear' },
+            scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+          }}
+        />
+        <div className="absolute inset-2 bg-gradient-to-br from-[#d4af76]/20 to-[#b38b5d]/10 rotate-45 blur-sm" />
+      </motion.div>
     </section>
   )
 }
