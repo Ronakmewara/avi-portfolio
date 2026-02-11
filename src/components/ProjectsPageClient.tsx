@@ -1,10 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import ProjectsGrid from '@/src/components/ProjectsGrid'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import ProjectsArchiveGrid from '@/src/components/ProjectsArchiveGrid'
-import { Star } from 'lucide-react'
 
 type Project = {
   _id: string
@@ -32,189 +30,337 @@ export default function ProjectsPageClient({
   ]
 
   const [activeCategory, setActiveCategory] = useState('All')
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth - 0.5) * 20,
+        y: (e.clientY / window.innerHeight - 0.5) * 20
+      })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
   const filteredProjects =
     activeCategory === 'All'
       ? projects
       : projects.filter((p) => p.category === activeCategory)
 
+  // Fixed positions - same on server and client
+  const particlePositions = [
+    { left: '15%', top: '20%' },
+    { left: '25%', top: '65%' },
+    { left: '45%', top: '35%' },
+    { left: '55%', top: '80%' },
+    { left: '70%', top: '15%' },
+    { left: '80%', top: '45%' },
+    { left: '35%', top: '70%' },
+    { left: '65%', top: '25%' },
+    { left: '20%', top: '85%' },
+    { left: '75%', top: '55%' },
+    { left: '40%', top: '10%' },
+    { left: '90%', top: '75%' },
+  ]
+
   return (
-    <section className="relative min-h-screen">
-      {/* Subtle background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-amber-50/30 via-white to-neutral-50/50 -z-10" />
+    <section className="relative min-h-screen bg-white overflow-hidden">
+      {/* CLEAN BACKGROUND */}
+      <div className="fixed inset-0 -z-10 bg-white" />
       
-      {/* Decorative elements */}
-      <div className="absolute top-40 right-20 w-[400px] h-[400px] rounded-full bg-gradient-to-br from-amber-100/20 via-yellow-50/10 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute bottom-40 left-20 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-orange-100/15 via-amber-50/8 to-transparent blur-3xl pointer-events-none" />
-
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12 lg:px-16">
-        {/* PAGE HEADER - with proper navbar spacing */}
-        <header className="pt-24 sm:pt-28 md:pt-36 lg:pt-44 xl:pt-48 pb-12 sm:pb-14 md:pb-20 lg:pb-24">
-          <div className="max-w-4xl">
-            {/* Breadcrumb / Label */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8 md:mb-10"
-            >
-              <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#b38b5d] fill-[#b38b5d]" />
-              <span className="text-[9px] sm:text-[10px] md:text-xs uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[#b38b5d] font-bold">
-                Portfolio
-              </span>
-              <div className="w-8 sm:w-12 h-px bg-gradient-to-r from-[#d4af76] to-transparent" />
-            </motion.div>
-
-            {/* Main Title */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-light tracking-tight text-neutral-900 mb-5 sm:mb-6 md:mb-8 leading-[0.95]"
-            >
-               
-              <span className="block bg-gradient-to-r from-[#d4af76] via-[#b38b5d] to-[#8b6f47] bg-clip-text text-transparent">
-                Projects
-              </span>
-            </motion.h1>
-
-            {/* Description */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="space-y-3 sm:space-y-4"
-            >
-              <p className="text-xs sm:text-sm md:text-base lg:text-lg text-neutral-500 font-light leading-relaxed max-w-2xl">
-                A curated collection of commissioned work and personal explorations
-                in wildlife and nature photography.
-              </p>
-              
-              {/* Stats */}
-              <div className="flex items-center gap-4 sm:gap-6 md:gap-8 pt-3 sm:pt-4">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-1 h-1 rounded-full bg-[#d4af76]" />
-                  <span className="text-[10px] sm:text-xs md:text-sm text-neutral-400 font-light">
-                    <span className="text-neutral-900 font-medium tabular-nums">{projects.length}</span> Projects
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-1 h-1 rounded-full bg-neutral-300" />
-                  <span className="text-[10px] sm:text-xs md:text-sm text-neutral-400 font-light">
-                    <span className="text-neutral-900 font-medium tabular-nums">{categories.length - 1}</span> Categories
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </header>
-
-        {/* CATEGORIES FILTER */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="mb-12 sm:mb-14 md:mb-16 lg:mb-20 xl:mb-24"
-        >
-          {/* Filter Label */}
-          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
-            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-neutral-400 font-medium">
-              Filter by Category
-            </span>
-            <div className="flex-1 h-px bg-gradient-to-r from-neutral-200 to-transparent" />
-          </div>
-
-          {/* Category Pills */}
-          <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4">
-            {categories.map((cat, index) => (
-              <motion.button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.4, 
-                  delay: 0.4 + index * 0.05,
-                  ease: [0.16, 1, 0.3, 1]
-                }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className={`
-                  relative px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-full 
-                  text-[11px] sm:text-xs md:text-sm font-medium
-                  tracking-wide transition-all duration-500 overflow-hidden
-                  ${
-                    activeCategory === cat
-                      ? 'text-white shadow-lg shadow-[#b38b5d]/20'
-                      : 'text-neutral-600 hover:text-neutral-900 bg-white/60 backdrop-blur-sm border border-neutral-200/60 hover:border-[#d4af76]/30 shadow-sm'
-                  }
-                `}
-              >
-                {/* Active background gradient */}
-                {activeCategory === cat && (
-                  <motion.div
-                    layoutId="activeCategory"
-                    className="absolute inset-0 bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900"
-                    transition={{ type: 'spring', duration: 0.6, bounce: 0.2 }}
-                  />
-                )}
-                
-                {/* Shimmer effect for active */}
-                {activeCategory === cat && (
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                    animate={{ x: ['-200%', '200%'] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                  />
-                )}
-
-                {/* Text */}
-                <span className="relative z-10">
-                  {cat}
-                </span>
-
-                {/* Hover accent line */}
-                {activeCategory !== cat && (
-                  <motion.div
-                    className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-[#d4af76] via-[#b38b5d] to-transparent opacity-0 group-hover:opacity-100"
-                    initial={{ scaleX: 0 }}
-                    whileHover={{ scaleX: 1 }}
-                    style={{ transformOrigin: 'left' }}
-                    transition={{ duration: 0.3 }}
-                  />
-                )}
-              </motion.button>
-            ))}
-          </div>
-
-          {/* Active count indicator */}
+      {/* 1. SUBTLE APERTURE RINGS - only on client */}
+      {isClient && (
+        <div className="fixed inset-0 -z-5 pointer-events-none overflow-hidden">
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mt-4 sm:mt-5 md:mt-6 flex items-center gap-2"
+            animate={{
+              x: mousePosition.x * 0.5,
+              y: mousePosition.y * 0.5,
+            }}
+            transition={{ type: 'spring', damping: 50, stiffness: 400 }}
+            className="absolute top-1/4 -right-20 w-[400px] h-[400px] opacity-[0.03]"
           >
-            <div className="w-6 sm:w-8 h-px bg-[#d4af76]" />
-            <span className="text-[10px] sm:text-xs text-neutral-400 font-light">
-              Showing{' '}
-              <span className="text-neutral-900 font-medium tabular-nums">
-                {filteredProjects.length}
-              </span>{' '}
-              {filteredProjects.length === 1 ? 'project' : 'projects'}
-            </span>
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute inset-0 border border-[#d4af76] rounded-full"
+                style={{
+                  width: `${100 - i * 20}%`,
+                  height: `${100 - i * 20}%`,
+                  margin: `${i * 10}%`,
+                  borderWidth: '0.5px',
+                }}
+              />
+            ))}
           </motion.div>
-        </motion.div>
+          
+          <motion.div
+            animate={{
+              x: mousePosition.x * -0.3,
+              y: mousePosition.y * -0.3,
+            }}
+            transition={{ type: 'spring', damping: 50, stiffness: 400 }}
+            className="absolute bottom-1/4 -left-20 w-[500px] h-[500px] opacity-[0.02]"
+          >
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute inset-0 border border-[#b38b5d] rounded-full"
+                style={{
+                  width: `${100 - i * 25}%`,
+                  height: `${100 - i * 25}%`,
+                  margin: `${i * 12.5}%`,
+                  borderWidth: '0.5px',
+                }}
+              />
+            ))}
+          </motion.div>
+        </div>
+      )}
+
+      {/* 2. VERTICAL FILM STRIP LINES - static, no randomness */}
+      <div className="fixed inset-0 -z-5 pointer-events-none hidden lg:block">
+        <div className="absolute left-[15%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#d4af76]/10 to-transparent" />
+        <div className="absolute left-[30%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#b38b5d]/10 to-transparent" />
+        <div className="absolute left-[50%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#d4af76]/10 to-transparent" />
+        <div className="absolute left-[70%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#b38b5d]/10 to-transparent" />
+        <div className="absolute left-[85%] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#d4af76]/10 to-transparent" />
+        
+        <div className="absolute top-[20%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#d4af76]/10 to-transparent" />
+        <div className="absolute top-[40%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#b38b5d]/10 to-transparent" />
+        <div className="absolute top-[60%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#d4af76]/10 to-transparent" />
+        <div className="absolute top-[80%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#b38b5d]/10 to-transparent" />
+      </div>
+
+      {/* 3. FLOATING PARTICLES - FIXED POSITIONS, no Math.random() */}
+      <div className="fixed inset-0 -z-5 pointer-events-none">
+        {isClient && particlePositions.map((pos, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-0.5 h-0.5 rounded-full bg-[#d4af76]/20"
+            style={{
+              left: pos.left,
+              top: pos.top,
+            }}
+            animate={{
+              y: [0, -30, 0],
+              x: [0, i % 2 === 0 ? 15 : -15, 0],
+              opacity: [0.1, 0.3, 0.1],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 8 + (i % 5),
+              repeat: Infinity,
+              delay: i * 0.2,
+              ease: 'easeInOut',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* 4. CAMERA LENS CORNER DETAIL */}
+      <div className="fixed top-8 left-8 w-12 h-12 opacity-[0.15] hidden xl:block pointer-events-none">
+        <div className="relative w-full h-full">
+          <div className="absolute inset-0 border border-[#d4af76] rounded-full" />
+          <div className="absolute inset-[25%] border border-[#b38b5d] rounded-full" />
+          <div className="absolute inset-[45%] bg-[#d4af76]/20 rounded-full" />
+        </div>
+      </div>
+
+      {/* 5. EXPOSURE COUNTER */}
+      <div className="fixed bottom-8 right-8 opacity-[0.2] hidden lg:block pointer-events-none font-mono text-[10px] tracking-[0.3em] text-neutral-400">
+        {String(filteredProjects.length).padStart(3, '0')} / {String(projects.length).padStart(3, '0')}
+      </div>
+
+      <div className="relative max-w-[1400px] mx-auto px-6 md:px-10">
+        {/* HEADER */}
+        <div className="pt-20 md:pt-24 pb-12 md:pb-16 relative">
+          <div className="flex items-start justify-between">
+            <div>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: 24 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="h-px bg-[#d4af76]/60 mb-4"
+              />
+              
+              <motion.h1
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-4xl sm:text-5xl md:text-6xl font-light tracking-tight text-neutral-900"
+              >
+                Projects
+              </motion.h1>
+            </div>
+            
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xs text-neutral-300 font-mono hidden sm:block"
+            >
+              {new Date().getFullYear()}
+            </motion.span>
+          </div>
+        </div>
+
+        {/* MOBILE FILTER */}
+        <div className="lg:hidden mb-10 relative">
+          <button
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            className="flex items-center gap-2 text-sm text-neutral-700 hover:text-neutral-900 transition-colors group"
+          >
+            <span className="text-xs uppercase tracking-wider">
+              {activeCategory}
+            </span>
+            <span className={`text-[10px] transition-transform duration-300 ${isFilterOpen ? 'rotate-180' : ''}`}>
+              ▼
+            </span>
+            <span className="w-1 h-1 rounded-full bg-[#d4af76]/60 ml-1" />
+          </button>
+          
+          <AnimatePresence>
+            {isFilterOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="absolute z-50 mt-2 p-2 bg-white/95 backdrop-blur-sm border border-neutral-200/80 rounded-md shadow-xl min-w-[200px]"
+              >
+                <div className="flex flex-col gap-1">
+                  {categories.map((cat) => {
+                    const isActive = activeCategory === cat
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          setActiveCategory(cat)
+                          setIsFilterOpen(false)
+                        }}
+                        className={`
+                          flex items-center justify-between px-4 py-2.5 text-left text-sm transition-all rounded
+                          ${isActive 
+                            ? 'bg-neutral-100 text-neutral-900' 
+                            : 'text-neutral-600 hover:bg-neutral-50'
+                          }
+                        `}
+                      >
+                        <span className="flex items-center gap-2">
+                          {isActive && (
+                            <motion.span
+                              layoutId="mobileActiveDot"
+                              className="w-1 h-1 rounded-full bg-[#d4af76]"
+                            />
+                          )}
+                          {cat}
+                        </span>
+                        <span className="text-[10px] text-neutral-400">
+                          {cat === 'All' 
+                            ? projects.length 
+                            : projects.filter(p => p.category === cat).length
+                          }
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* DESKTOP FILTER */}
+        <div className="hidden lg:flex items-end justify-between mb-16">
+          <div className="flex items-center gap-8">
+            {categories.map((cat, index) => {
+              const isActive = activeCategory === cat
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`
+                    relative py-1 text-sm transition-all duration-300 group
+                    ${isActive 
+                      ? 'text-neutral-900' 
+                      : 'text-neutral-400 hover:text-neutral-600'
+                    }
+                  `}
+                >
+                  <span className="relative">
+                    {cat}
+                    <span className={`
+                      absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full 
+                      transition-all duration-300
+                      ${isActive 
+                        ? 'bg-[#d4af76] opacity-100' 
+                        : 'bg-neutral-300 opacity-0 group-hover:opacity-50'
+                      }
+                    `} />
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1">
+              {[...Array(3)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className="w-1 h-2 bg-[#d4af76]/20 rounded-sm" 
+                />
+              ))}
+            </div>
+            <span className="text-xs text-neutral-400 font-mono tracking-wider">
+              FRAME {String(filteredProjects.length).padStart(2, '0')}/{String(projects.length).padStart(2, '0')}
+            </span>
+          </div>
+        </div>
+
+        {/* Mobile counter */}
+        <div className="lg:hidden flex justify-between items-center mb-6">
+          <span className="text-[10px] text-neutral-400 font-mono">
+            {String(filteredProjects.length).padStart(2, '0')}/{String(projects.length).padStart(2, '0')}
+          </span>
+        </div>
 
         {/* PROJECT GRID */}
-        <motion.div
-          key={activeCategory}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <ProjectsArchiveGrid projects={filteredProjects} />
-        </motion.div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeCategory}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="pb-20 md:pb-24"
+          >
+            <ProjectsArchiveGrid projects={filteredProjects} />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* FOOTER */}
+        <div className="py-16 text-center relative">
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-8 h-px bg-gradient-to-r from-transparent to-[#d4af76]/30" />
+            <span className="text-[8px] uppercase tracking-[0.4em] text-neutral-300 font-light">
+              PicturebyAvi
+            </span>
+            <div className="w-8 h-px bg-gradient-to-l from-transparent to-[#d4af76]/30" />
+          </div>
+          
+          <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-1 h-1 rounded-full bg-[#d4af76]/20" />
+        </div>
       </div>
+
+      {/* Light leak effect */}
+      <div className="fixed top-0 left-0 w-32 h-32 bg-gradient-to-br from-[#d4af76]/5 to-transparent pointer-events-none" />
+      <div className="fixed bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-[#b38b5d]/5 to-transparent pointer-events-none" />
     </section>
   )
 }

@@ -53,4 +53,14 @@ export const FEATURED_PROJECTS_QUERY = `
     category
   }
 `
- 
+ export const SOCIAL_SECTION_QUERY = `
+  *[_type == "socialSection"][0] {
+    title,
+    subtitle,
+    instagramUrl,
+    image,
+    btsImage
+  }
+`
+
+
