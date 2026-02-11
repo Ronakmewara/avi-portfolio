@@ -3,13 +3,11 @@
 import { motion } from 'framer-motion'
 import { urlFor } from '@/src/lib/sanity.image'
 
-export default function ProjectBlocks({ blocks }: { blocks: any[] | null }) {
-  if (!blocks || blocks.length === 0) {
-    return null
-  }
+export default function ProjectBlocks({ blocks }: { blocks: any[] }) {
+  if (!blocks || blocks.length === 0) return null
 
   return (
-    <section style={{ paddingBottom: '10rem' }}>
+    <section className="pb-32">
       {blocks.map((block, index) => {
         switch (block._type) {
           case 'imageBlock':
@@ -33,27 +31,27 @@ export default function ProjectBlocks({ blocks }: { blocks: any[] | null }) {
 }
 
 
+
 function ImageBlock({ block }: { block: any }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        maxWidth: '1600px',
-        margin: '10rem auto',
-        padding: '0 2rem',
-      }}
+      transition={{ duration: 1 }}
+      className="max-w-[1600px] mx-auto px-8 md:px-16 my-32"
     >
-      <img
-        src={urlFor(block.image).width(2000).quality(90).url()}
-        alt=""
-        style={{ width: '100%', display: 'block' }}
-      />
+      <div className="relative w-full aspect-[16/9]">
+        <img
+          src={urlFor(block.image).width(2000).quality(95).url()}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </div>
     </motion.div>
   )
 }
+
 
 function ImagePairBlock({ block }: { block: any }) {
   return (
@@ -62,57 +60,40 @@ function ImagePairBlock({ block }: { block: any }) {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 1 }}
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '3rem',
-        maxWidth: '1400px',
-        margin: '8rem auto',
-        padding: '0 2rem',
-      }}
+      className="max-w-[1400px] mx-auto px-8 md:px-16 my-32 grid grid-cols-1 md:grid-cols-2 gap-10"
     >
-      <img
-        src={urlFor(block.left).width(1200).quality(90).url()}
-        alt=""
-        style={{ width: '100%', display: 'block' }}
-      />
-      <img
-        src={urlFor(block.right).width(1200).quality(90).url()}
-        alt=""
-        style={{ width: '100%', display: 'block' }}
-      />
+      {[block.left, block.right].map((img: any, i: number) => (
+        <div key={i} className="relative aspect-[4/5]">
+          <img
+            src={urlFor(img).width(1200).quality(90).url()}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
+      ))}
     </motion.div>
   )
 }
 
+
 function TextBlock({ block }: { block: any }) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8 }}
-      style={{
-        maxWidth: '600px',
-        margin: '6rem auto',
-        padding: '0 2rem',
-        fontSize: '1.1rem',
-        lineHeight: 1.7,
-        color: '#444',
-      }}
+      className="max-w-3xl mx-auto px-8 md:px-0 my-32"
     >
-      {block.text}
+      <div className="text-lg leading-relaxed text-neutral-700 space-y-6">
+        <p>{block.text}</p>
+      </div>
     </motion.div>
   )
 }
 
 function SpacerBlock({ block }: { block: any }) {
-  const sizes: Record<string, string> = {
-    sm: '4rem',
-    md: '8rem',
-    lg: '14rem',
-  }
-
-  return <div style={{ height: sizes[block.size || 'md'] }} />
+  return <div style={{ height: `${block.size || 120}px` }} />
 }
+
 

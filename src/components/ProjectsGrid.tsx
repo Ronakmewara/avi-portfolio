@@ -4,12 +4,13 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { urlFor } from '@/src/lib/sanity.image'
 import { ArrowUpRight, Sparkles } from 'lucide-react'
 import { useRef } from 'react'
-
+import Link from 'next/link'
 type Project = {
   _id: string
   title: string
   year: string
   coverImage: any
+  slug: { current: string }
   category?: string
   description?: string
 }
@@ -110,6 +111,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const isEven = index % 2 === 0
   
   return (
+     <Link href={`/projects/${project.slug.current}`} className="block">
     <motion.article
       ref={cardRef}
       style={{ opacity }}
@@ -301,6 +303,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           )}
         </div>
       </motion.div>
-    </motion.article>
+    </motion.article> </Link>
   )
 }

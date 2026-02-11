@@ -19,6 +19,7 @@ export const PROJECT_BY_SLUG_QUERY = `
     year,
     coverImage,
     description,
+    "category": category->title,
     blocks[]{
       _type,
       image,
@@ -29,3 +30,27 @@ export const PROJECT_BY_SLUG_QUERY = `
     }
   }
 `
+
+
+export const ALL_PROJECTS_QUERY = `
+  *[_type == "project"] | order(year desc) {
+    _id,
+    title,
+    year,
+    slug,
+    coverImage,
+    "category": category->title
+  }
+`
+
+export const FEATURED_PROJECTS_QUERY = `
+  *[_type == "project" && featured == true] | order(year desc) {
+    _id,
+    title,
+    year,
+    slug,
+    coverImage,
+    category
+  }
+`
+ 

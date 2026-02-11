@@ -30,6 +30,12 @@ export const project = defineType({
       type: 'image',
       options: { hotspot: true },
     }),
+     defineField({
+      name: 'category',
+      title: 'Category',
+      type: 'reference',
+      to: [{ type: 'category' }],
+    }),
     defineField({
       name: 'blocks',
       title: 'Story Blocks',
