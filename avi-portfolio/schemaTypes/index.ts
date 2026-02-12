@@ -6,6 +6,7 @@ import { textBlock } from './blocks/textBlock'
 import { spacerBlock } from './blocks/spacerBlock'
  import { category } from './category'
 import { socialSection } from './socialSection'
+import { about } from './about'
 
 
 export const schemaTypes = [
@@ -13,6 +14,7 @@ export const schemaTypes = [
   project,
   category,
    socialSection,
+   about,
   imageBlock,
   imagePairBlock,
   textBlock,

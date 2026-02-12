@@ -62,5 +62,14 @@ export const FEATURED_PROJECTS_QUERY = `
     btsImage
   }
 `
+export const ABOUT_QUERY = `
+  *[_type == "about"][0] {
+    headline,
+    portrait,
+    bio,
+    philosophy
+  }
+`
+
 
 
