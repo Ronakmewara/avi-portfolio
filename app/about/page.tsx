@@ -8,4 +8,5 @@ export default async function AboutPage() {
   if (!data) return null
 
   return <AboutPageClient data={data} />
+  
 }

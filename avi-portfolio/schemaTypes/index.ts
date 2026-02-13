@@ -7,6 +7,8 @@ import { spacerBlock } from './blocks/spacerBlock'
  import { category } from './category'
 import { socialSection } from './socialSection'
 import { about } from './about'
+import { portfolioItem } from './portfolioItem'
+import { portfolioCategory } from './portfolioCategory'
 
 
 export const schemaTypes = [
@@ -15,6 +17,8 @@ export const schemaTypes = [
   category,
    socialSection,
    about,
+   portfolioCategory,
+  portfolioItem,
   imageBlock,
   imagePairBlock,
   textBlock,

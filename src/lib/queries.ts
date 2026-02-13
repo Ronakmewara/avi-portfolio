@@ -67,9 +67,33 @@ export const ABOUT_QUERY = `
     headline,
     portrait,
     bio,
-    philosophy
+    philosophy,
+    clients
   }
 `
+export const PORTFOLIO_ITEMS_BY_CATEGORY = `
+  *[
+    _type == "portfolioItem" &&
+    category->slug.current == $slug
+  ] | order(featured desc, _createdAt desc) {
+    _id,
+    media,
+    caption,
+    featured
+  }
+`
+
+
+export const PORTFOLIO_CATEGORIES_QUERY = `
+  *[_type == "portfolioCategory"] | order(order asc) {
+    _id,
+    title,
+    slug,
+    description,
+    coverMedia
+  }
+`
+
 
 
 

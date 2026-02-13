@@ -27,17 +27,18 @@ export const about = defineType({
       title: 'Philosophy Line',
       type: 'string',
     }),
-    defineField({
+   defineField({
   name: 'clients',
   title: 'Client Logos',
   type: 'array',
   of: [
     {
       type: 'image',
-      options: { hotspot: true },
-    },
-  ],
+      options: { hotspot: true }
+    }
+  ]
 }),
+
 
   ],
 })
