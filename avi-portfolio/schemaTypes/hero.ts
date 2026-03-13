@@ -17,5 +17,14 @@ export const hero = defineType({
       type: 'string',
       description: 'Short supporting line',
     }),
+    defineField({
+      name: 'image',
+      title: 'Hero Image',
+      type: 'image',
+      options: {
+        hotspot: true,  
+      },
+      validation: (Rule) => Rule.required(),
+    }),
   ],
 })

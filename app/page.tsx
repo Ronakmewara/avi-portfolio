@@ -10,11 +10,11 @@ import SocialSection from '@/src/components/SocialSection'
 export default async function Home() {
   const hero = await sanityClient.fetch(HERO_QUERY)
   const projects = await sanityClient.fetch(PROJECTS_QUERY)
-const social = await sanityClient.fetch(SOCIAL_SECTION_QUERY)
+  const social = await sanityClient.fetch(SOCIAL_SECTION_QUERY)
 
   return (
     <main>
-      <Hero title={hero.title} subtitle={hero.subtitle} />
+      <Hero title={hero.title} subtitle={hero.subtitle} image={hero.image} />
       <ProjectsGrid projects={projects} />
       <StatementSection />
       <SocialSection data={social} />

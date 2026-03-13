@@ -6,7 +6,7 @@ export const portfolioItem = defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'media',
+      name: 'image',
       title: 'Image / Video',
       type: 'image',
       options: { hotspot: true },
@@ -20,6 +20,19 @@ export const portfolioItem = defineType({
       validation: Rule => Rule.required(),
     }),
     defineField({
+  name: 'orientation',
+  title: 'Orientation',
+  type: 'string',
+  options: {
+    list: [
+      { title: 'Vertical', value: 'vertical' },
+      { title: 'Horizontal', value: 'horizontal' },
+      { title: 'Square', value: 'square' },
+    ],
+    layout: 'radio',
+  },
+}),
+ defineField({
       name: 'caption',
       title: 'Caption',
       type: 'string',

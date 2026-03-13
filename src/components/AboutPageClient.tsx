@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { urlFor } from '@/src/lib/sanity.image'
 import { PortableText } from '@portabletext/react'
-import { useRef, useState, useEffect } from 'react'
+import { useRef } from 'react'
 
 type AboutData = {
   headline?: string
@@ -27,20 +27,6 @@ export default function AboutPageClient({ data }: { data: AboutData }) {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0])
   const imageScale = useTransform(scrollYProgress, [0, 0.5], [1, 1.15])
 
-  // Magical cursor effect
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2
-      const y = (e.clientY / window.innerHeight - 0.5) * 2
-      setMousePosition({ x, y })
-    }
-    
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
-
   const headlineWords = data.headline?.split(' ') || []
 
   return (
@@ -48,29 +34,6 @@ export default function AboutPageClient({ data }: { data: AboutData }) {
       ref={containerRef}
       className="relative bg-[#faf8f4] text-[#2c2c2c] overflow-hidden selection:bg-[#d4af76] selection:text-white"
     >
-      {/* Magical cursor follower */}
-      <motion.div
-        className="hidden lg:block fixed top-0 left-0 pointer-events-none z-50"
-        animate={{
-          x: mousePosition.x * (typeof window !== 'undefined' ? window.innerWidth : 0) / 2 + (typeof window !== 'undefined' ? window.innerWidth : 0) / 2 - 16,
-          y: mousePosition.y * (typeof window !== 'undefined' ? window.innerHeight : 0) / 2 + (typeof window !== 'undefined' ? window.innerHeight : 0) / 2 - 16,
-        }}
-        transition={{ type: 'spring', damping: 30, stiffness: 200 }}
-      >
-        <motion.div
-          className="w-8 h-8 border-2 border-[#d4af76]/50 rotate-45 backdrop-blur-sm"
-          animate={{
-            rotate: [45, 405],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            rotate: { duration: 4, repeat: Infinity, ease: 'linear' },
-            scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
-          }}
-        />
-        <div className="absolute inset-2 bg-gradient-to-br from-[#d4af76]/20 to-[#b38b5d]/10 rotate-45 blur-sm" />
-      </motion.div>
-
       {/* Subtle texture */}
       <div className="fixed inset-0 opacity-[0.02] pointer-events-none z-40 mix-blend-multiply">
         <svg className="w-full h-full">

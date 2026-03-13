@@ -1,12 +1,13 @@
 'use client'
 
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
-import { ArrowDown, Award, Building2, Star } from 'lucide-react'
+import { useRef } from 'react'
+import { ArrowDown, Star } from 'lucide-react'
 
 type HeroProps = {
   title: string
   subtitle: string
+  image?: any
 }
 
 export default function Hero({ title, subtitle }: HeroProps) {
@@ -26,25 +27,6 @@ export default function Hero({ title, subtitle }: HeroProps) {
     useTransform(scrollYProgress, [0, 0.5, 0.8], [1, 0.6, 0]),
     { stiffness: 100, damping: 30 }
   )
-  
-  // Mouse position with spring physics
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const springConfig = { damping: 30, stiffness: 200 }
-  const mouseX = useSpring(0, springConfig)
-  const mouseY = useSpring(0, springConfig)
-  
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2
-      const y = (e.clientY / window.innerHeight - 0.5) * 2
-      mouseX.set(x * 40)
-      mouseY.set(y * 40)
-      setMousePosition({ x, y })
-    }
-    
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [mouseX, mouseY])
 
   // Split title into words
   const titleWords = title.split(' ')
@@ -57,21 +39,9 @@ export default function Hero({ title, subtitle }: HeroProps) {
       className="relative h-screen overflow-hidden bg-gradient-to-br from-neutral-50 via-white to-amber-50/30"
     >
       {/* Luxury Gradient Orbs - sophisticated gold/champagne tones */}
-      <motion.div
-        style={{
-          x: mouseX,
-          y: mouseY,
-        }}
-        className="absolute top-1/3 right-1/4 w-[700px] h-[700px] rounded-full bg-gradient-to-br from-amber-100/40 via-yellow-50/20 to-transparent blur-3xl"
-      />
+      <div className="absolute top-1/3 right-1/4 w-[700px] h-[700px] rounded-full bg-gradient-to-br from-amber-100/40 via-yellow-50/20 to-transparent blur-3xl" />
       
-      <motion.div
-        style={{
-          x: useTransform(mouseX, (x) => -x * 0.6),
-          y: useTransform(mouseY, (y) => -y * 0.6),
-        }}
-        className="absolute bottom-1/4 left-1/3 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-orange-100/30 via-amber-50/15 to-transparent blur-3xl"
-      />
+      <div className="absolute bottom-1/4 left-1/3 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-orange-100/30 via-amber-50/15 to-transparent blur-3xl" />
 
       {/* Premium geometric pattern overlay */}
       <div
@@ -89,10 +59,6 @@ export default function Hero({ title, subtitle }: HeroProps) {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          x: useTransform(mouseX, (x) => x * 0.25),
-          y: useTransform(mouseY, (y) => y * 0.25),
-        }}
         className="hidden md:block absolute top-[18%] right-[12%] w-[280px] lg:w-[400px] h-[280px] lg:h-[400px]"
       >
         <div className="absolute inset-0 border-2 border-[#b38b5d]/20 rounded-sm rotate-12" />
@@ -103,10 +69,6 @@ export default function Hero({ title, subtitle }: HeroProps) {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          x: useTransform(mouseX, (x) => -x * 0.2),
-          y: useTransform(mouseY, (y) => -y * 0.2),
-        }}
         className="hidden md:block absolute bottom-[22%] left-[8%] w-[200px] lg:w-[280px] h-[200px] lg:h-[280px]"
       >
         <div className="absolute inset-0 border-2 border-[#b38b5d]/15 rounded-sm -rotate-6" />
@@ -114,13 +76,7 @@ export default function Hero({ title, subtitle }: HeroProps) {
       </motion.div>
 
       {/* Floating luxury accent elements */}
-      <motion.div
-        style={{
-          x: useTransform(mouseX, (x) => x * 0.4),
-          y: useTransform(mouseY, (y) => y * 0.4),
-        }}
-        className="absolute top-[28%] left-[18%]"
-      >
+      <motion.div className="absolute top-[28%] left-[18%]">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
@@ -128,45 +84,12 @@ export default function Hero({ title, subtitle }: HeroProps) {
         />
       </motion.div>
       
-      <motion.div
-        style={{
-          x: useTransform(mouseX, (x) => -x * 0.35),
-          y: useTransform(mouseY, (y) => -y * 0.35),
-        }}
-        className="absolute bottom-[38%] right-[22%]"
-      >
+      <motion.div className="absolute bottom-[38%] right-[22%]">
         <motion.div
           animate={{ rotate: -360 }}
           transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           className="w-4 h-4 rounded-sm bg-gradient-to-br from-amber-300 to-[#d4af76] shadow-xl"
         />
-      </motion.div>
-
-      {/* Premium icon accents - hidden on small screens */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.06 }}
-        transition={{ duration: 2, delay: 1 }}
-        style={{
-          x: useTransform(mouseX, (x) => x * 0.12),
-          y: useTransform(mouseY, (y) => y * 0.12),
-        }}
-        className="hidden lg:block absolute top-[12%] left-[10%]"
-      >
-        <Building2 className="w-16 xl:w-20 h-16 xl:h-20 text-[#b38b5d]" strokeWidth={1} />
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.05 }}
-        transition={{ duration: 2, delay: 1.3 }}
-        style={{
-          x: useTransform(mouseX, (x) => -x * 0.1),
-          y: useTransform(mouseY, (y) => -y * 0.1),
-        }}
-        className="hidden lg:block absolute bottom-[18%] right-[15%]"
-      >
-        <Award className="w-14 xl:w-16 h-14 xl:h-16 text-amber-400" strokeWidth={1} />
       </motion.div>
 
       {/* Main Content - Now with smooth natural scroll */}
@@ -309,29 +232,6 @@ export default function Hero({ title, subtitle }: HeroProps) {
             className="w-[1px] h-12 sm:h-14 md:h-16 lg:h-18 xl:h-20 bg-gradient-to-b from-[#d4af76] via-[#b38b5d]/50 to-transparent"
           />
         </motion.div>
-      </motion.div>
-
-      {/* Luxury cursor follower - refined diamond shape */}
-      <motion.div
-        className="hidden lg:block fixed top-0 left-0 pointer-events-none z-50"
-        animate={{
-          x: mousePosition.x * (typeof window !== 'undefined' ? window.innerWidth : 0) / 2 + (typeof window !== 'undefined' ? window.innerWidth : 0) / 2 - 16,
-          y: mousePosition.y * (typeof window !== 'undefined' ? window.innerHeight : 0) / 2 + (typeof window !== 'undefined' ? window.innerHeight : 0) / 2 - 16,
-        }}
-        transition={{ type: 'spring', damping: 30, stiffness: 200 }}
-      >
-        <motion.div
-          className="w-8 h-8 border-2 border-[#d4af76]/50 rotate-45 backdrop-blur-sm"
-          animate={{
-            rotate: [45, 405],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            rotate: { duration: 4, repeat: Infinity, ease: 'linear' },
-            scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
-          }}
-        />
-        <div className="absolute inset-2 bg-gradient-to-br from-[#d4af76]/20 to-[#b38b5d]/10 rotate-45 blur-sm" />
       </motion.div>
     </section>
   )

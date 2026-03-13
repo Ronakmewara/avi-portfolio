@@ -10,7 +10,8 @@ export const PROJECTS_QUERY = `
 export const HERO_QUERY = `
   *[_type == "hero"][0] {
     title,
-    subtitle
+    subtitle,
+    image
   }
 `
 export const PROJECT_BY_SLUG_QUERY = `
@@ -71,17 +72,33 @@ export const ABOUT_QUERY = `
     clients
   }
 `
+// export const PORTFOLIO_ITEMS_BY_CATEGORY = `
+//   *[
+//     _type == "portfolioItem" &&
+//     category->slug.current == $slug &&
+//     defined(image)
+//   ] | order(featured desc, _createdAt desc) {
+//     _id,
+//     image,
+//     caption,
+//     orientation,
+//     featured
+//   }
+// `
+
 export const PORTFOLIO_ITEMS_BY_CATEGORY = `
   *[
     _type == "portfolioItem" &&
     category->slug.current == $slug
   ] | order(featured desc, _createdAt desc) {
     _id,
-    media,
+    image,
     caption,
-    featured
+    orientation,
+    year
   }
 `
+
 
 
 export const PORTFOLIO_CATEGORIES_QUERY = `

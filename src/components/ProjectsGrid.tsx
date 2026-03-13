@@ -1,8 +1,8 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { urlFor } from '@/src/lib/sanity.image'
-import { ArrowUpRight, Sparkles, Camera, Eye, Quote } from 'lucide-react'
+import { ArrowUpRight, Camera, Eye, Quote } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
 
@@ -22,7 +22,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   return (
     <section 
       ref={containerRef}
-      className="relative py-20 md:py-28 lg:py-32 px-4 md:px-6 lg:px-8 overflow-hidden bg-[#faf9f7]"
+      className="relative py-20 md:py-28 lg:py-32 px-8 md:px-14 lg:px-24 xl:px-32 overflow-hidden bg-[#faf9f7]"
       style={{
         backgroundImage: `
           radial-gradient(circle at 10% 20%, rgba(212, 175, 118, 0.02) 0%, transparent 30%),
@@ -33,45 +33,37 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
     >
       {/* Elegant background aperture circles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] opacity-[0.015]"
-        >
+        <div className="absolute -top-1/2 -right-1/4 h-[800px] w-[800px] opacity-[0.015]">
           {[...Array(4)].map((_, i) => (
             <div
               key={`bg-circle-${i}`}
-              className="absolute inset-0 border border-[#d4af76] rounded-full"
+              className="absolute inset-0 rounded-full border border-[#d4af76]"
               style={{
                 width: `${100 - i * 20}%`,
                 height: `${100 - i * 20}%`,
                 margin: `${i * 10}%`,
                 borderWidth: '1px',
-                opacity: 0.2 - i * 0.05
+                opacity: 0.2 - i * 0.05,
               }}
             />
           ))}
-        </motion.div>
-        
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/2 -left-1/4 w-[900px] h-[900px] opacity-[0.015]"
-        >
+        </div>
+
+        <div className="absolute -bottom-1/2 -left-1/4 h-[900px] w-[900px] opacity-[0.015]">
           {[...Array(4)].map((_, i) => (
             <div
               key={`bg-circle2-${i}`}
-              className="absolute inset-0 border border-[#b38b5d] rounded-full"
+              className="absolute inset-0 rounded-full border border-[#b38b5d]"
               style={{
                 width: `${100 - i * 20}%`,
                 height: `${100 - i * 20}%`,
                 margin: `${i * 10}%`,
                 borderWidth: '1px',
-                opacity: 0.15 - i * 0.04
+                opacity: 0.15 - i * 0.04,
               }}
             />
           ))}
-        </motion.div>
+        </div>
       </div>
 
       {/* Subtle grid overlay */}
@@ -86,7 +78,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative max-w-[1200px] mx-auto">
         {/* ENHANCED SECTION HEADER - Matching Statement theme */}
         <motion.div 
           className="mb-16 md:mb-20 lg:mb-24"
@@ -113,16 +105,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="flex items-center gap-3 mb-4"
               >
-                <div className="relative">
-                  <Sparkles className="w-4 h-4 text-[#d4af76]" strokeWidth={1.5} />
-                  <motion.div
-                    animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.6, 0.3] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute inset-0 blur-sm"
-                  >
-                    <Sparkles className="w-4 h-4 text-[#b38b5d]/30" strokeWidth={1.5} />
-                  </motion.div>
-                </div>
+                 
                 <span className="text-xs font-light uppercase tracking-[0.3em] text-[#b38b5d]">
                   Featured Work
                 </span>
@@ -316,18 +299,8 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
 // Individual Project Card Component - Fixed mobile loading issue
 function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const cardRef = useRef<HTMLDivElement>(null)
   const [imageLoaded, setImageLoaded] = useState(false)
   const imageRef = useRef<HTMLImageElement>(null)
-  
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "end start"]
-  })
-
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.95, 1, 1, 0.95])
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], [30, 0, -30])
 
   // Preload image
   useEffect(() => {
@@ -344,8 +317,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <Link href={`/projects/${project.slug.current}`} className="block group">
       <motion.article
-        ref={cardRef}
-        style={{ opacity }}
         className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center relative"
       >
         {/* MOBILE: Fixed image loading - no black space */}
@@ -529,17 +500,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                     className="inline-block mr-3"
                   >
                     {word}
-                    {i === arr.length - 1 && (
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: 1.2 }}
-                        className="inline-block ml-1 text-[#d4af76]"
-                      >
-                        ✦
-                      </motion.span>
-                    )}
                   </motion.span>
                 ))}
               </h3>
@@ -613,17 +573,12 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
         {/* DESKTOP: Image (unchanged) */}
         <motion.div
-          style={{ scale }}
           className={`hidden lg:block lg:col-span-7 relative ${isEven ? 'lg:order-2' : 'lg:col-start-1 lg:order-1'}`}
         >
           <div className="relative overflow-hidden rounded-2xl bg-neutral-100 shadow-2xl shadow-black/5 group">
             
             {/* Decorative aperture overlay */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none z-10"
-            >
+            <div className="absolute inset-0 z-10 opacity-0 transition-opacity duration-700 pointer-events-none group-hover:opacity-10">
               {[...Array(3)].map((_, i) => (
                 <div
                   key={i}
@@ -635,7 +590,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                   }}
                 />
               ))}
-            </motion.div>
+            </div>
             
             <div className="relative w-full" style={{ paddingBottom: '60%' }}>
               
